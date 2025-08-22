@@ -1,0 +1,350 @@
+"use client"
+import { useState, useEffect } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ProtectedRoute } from "@/components/protected-route"
+import { DashboardLayout } from "@/components/dashboard-layout"
+import { ApiService, type Report } from "@/lib/api"
+import {
+  FileText,
+  AlertTriangle,
+  MapPin,
+  Calendar,
+  Search,
+  Filter,
+  Eye,
+  Plus,
+  Clock,
+  CheckCircle,
+  Image,
+  Users,
+  Navigation,
+} from "lucide-react"
+import Link from "next/link"
+
+export default function EmployeeReportsPage() {
+  const [reports, setReports] = useState<Report[]>([])
+  const [filteredReports, setFilteredReports] = useState<Report[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [statusFilter, setStatusFilter] = useState("all")
+  const [selectedReport, setSelectedReport] = useState<Report | null>(null)
+
+  useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const reportsData = await ApiService.getEmployeeReports()
+        setReports(reportsData)
+        setFilteredReports(reportsData)
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchReports()
+  }, [])
+
+  useEffect(() => {
+    let filtered = reports
+
+    if (searchTerm) {
+      filtered = filtered.filter(
+        (report) =>
+          report.crop.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          report.region.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          report.description.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+    }
+
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((report) => report.status === statusFilter)
+    }
+
+    setFilteredReports(filtered)
+  }, [reports, searchTerm, statusFilter])
+
+  const handleMarkUrgent = async (reportId: string) => {
+    try {
+      await ApiService.markReportUrgent(reportId)
+      // Refresh reports
+      const updatedReports = await ApiService.getEmployeeReports()
+      setReports(updatedReports)
+    } catch (err: any) {
+      setError(err.message)
+    }
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Pending":
+        return "bg-yellow-100 text-yellow-800 border-yellow-200"
+      case "In Progress":
+        return "bg-blue-100 text-blue-800 border-blue-200"
+      case "Solved":
+        return "bg-green-100 text-green-800 border-green-200"
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200"
+    }
+  }
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "Pending":
+        return <Clock className="h-4 w-4" />
+      case "In Progress":
+        return <AlertTriangle className="h-4 w-4" />
+      case "Solved":
+        return <CheckCircle className="h-4 w-4" />
+      default:
+        return <FileText className="h-4 w-4" />
+    }
+  }
+
+  if (loading) {
+    return (
+      <ProtectedRoute allowedRoles={["employee"]}>
+        <DashboardLayout title="Assigned Reports">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        </DashboardLayout>
+      </ProtectedRoute>
+    )
+  }
+
+  return (
+    <ProtectedRoute allowedRoles={["employee"]}>
+      <DashboardLayout title="Assigned Reports">
+        <div className="space-y-6">
+          {error && (
+            <Alert variant="destructive">
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+
+          {/* Quick Actions */}
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-2xl font-bold text-foreground">Field Reports</h2>
+              <p className="text-muted-foreground">Manage assigned reports and assist farmers</p>
+            </div>
+            <Link href="/employee/dashboard/reports/new">
+              <Button>
+                <Plus className="mr-2 h-4 w-4" />
+                Submit for Farmer
+              </Button>
+            </Link>
+          </div>
+
+          {/* Filters */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Filter className="mr-2 h-4 w-4" />
+                Filter Reports
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <Label htmlFor="search">Search</Label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input
+                      id="search"
+                      placeholder="Search by crop, region, or description..."
+                      value={searchTerm}
+                      onChange={(e) => setSearchTerm(e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+                <div className="sm:w-48">
+                  <Label htmlFor="status">Status</Label>
+                  <Select value={statusFilter} onValueChange={setStatusFilter}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Filter by status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Status</SelectItem>
+                      <SelectItem value="Pending">Pending</SelectItem>
+                      <SelectItem value="In Progress">In Progress</SelectItem>
+                      <SelectItem value="Solved">Solved</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Reports List */}
+          <div className="grid gap-6">
+            {filteredReports.length === 0 ? (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <FileText className="mx-auto h-12 w-12 text-muted-foreground" />
+                  <h3 className="mt-2 text-sm font-semibold text-foreground">No reports found</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    {searchTerm || statusFilter !== "all"
+                      ? "Try adjusting your filters"
+                      : "No reports assigned yet. Check back later or help farmers submit reports."}
+                  </p>
+                  {!searchTerm && statusFilter === "all" && (
+                    <div className="mt-6">
+                      <Link href="/employee/dashboard/reports/new">
+                        <Button>
+                          <Plus className="mr-2 h-4 w-4" />
+                          Submit for Farmer
+                        </Button>
+                      </Link>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ) : (
+              filteredReports.map((report) => (
+                <Card key={report._id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <CardTitle className="text-xl">{report.crop}</CardTitle>
+                          {report.urgent && (
+                            <Badge variant="destructive" className="text-xs">
+                              <AlertTriangle className="mr-1 h-3 w-3" />
+                              Urgent
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                          <div className="flex items-center">
+                            <MapPin className="mr-1 h-3 w-3" />
+                            {report.region}
+                          </div>
+                          <div className="flex items-center">
+                            <Calendar className="mr-1 h-3 w-3" />
+                            {new Date(report.createdAt).toLocaleDateString()}
+                          </div>
+                          {report.farmer && (
+                            <div className="flex items-center">
+                              <Users className="mr-1 h-3 w-3" />
+                              Farmer: {report.farmer}
+                            </div>
+                          )}
+                          {report.images.length > 0 && (
+                            <div className="flex items-center">
+                              <Image className="mr-1 h-3 w-3" />
+                              {report.images.length} image(s)
+                            </div>
+                          )}
+                          {report.location && (
+                            <div className="flex items-center">
+                              <Navigation className="mr-1 h-3 w-3" />
+                              GPS Tagged
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Badge className={getStatusColor(report.status)}>
+                          {getStatusIcon(report.status)}
+                          <span className="ml-1">{report.status}</span>
+                        </Badge>
+                        {!report.urgent && report.status === "Pending" && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleMarkUrgent(report._id)}
+                            className="text-red-600 border-red-200 hover:bg-red-50"
+                          >
+                            Mark Urgent
+                          </Button>
+                        )}
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button size="sm" variant="outline" onClick={() => setSelectedReport(report)}>
+                              <Eye className="mr-1 h-3 w-3" />
+                              View Details
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent className="max-w-2xl">
+                            <DialogHeader>
+                              <DialogTitle>Report Details: {report.crop}</DialogTitle>
+                              <DialogDescription>
+                                Submitted on {new Date(report.createdAt).toLocaleDateString()}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              <div>
+                                <Label>Description</Label>
+                                <p className="text-sm text-muted-foreground mt-1">{report.description}</p>
+                              </div>
+                              {report.location && (
+                                <div>
+                                  <Label>GPS Location</Label>
+                                  <p className="text-sm text-muted-foreground mt-1">
+                                    Lat: {report.location.lat.toFixed(6)}, Lng: {report.location.lng.toFixed(6)}
+                                  </p>
+                                </div>
+                              )}
+                              {report.images.length > 0 && (
+                                <div>
+                                  <Label>Images</Label>
+                                  <div className="grid grid-cols-2 gap-2 mt-2">
+                                    {report.images.map((image, index) => (
+                                      <img
+                                        key={index}
+                                        src={image || "/placeholder.svg"}
+                                        alt={`Report image ${index + 1}`}
+                                        className="w-full h-32 object-cover rounded-lg border border-border"
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              {report.diagnosis && (
+                                <div>
+                                  <Label>Diagnosis</Label>
+                                  <p className="text-sm text-muted-foreground mt-1">{report.diagnosis}</p>
+                                </div>
+                              )}
+                              {report.solution && (
+                                <div>
+                                  <Label>Recommended Solution</Label>
+                                  <p className="text-sm text-muted-foreground mt-1">{report.solution}</p>
+                                </div>
+                              )}
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">{report.description}</p>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </div>
+      </DashboardLayout>
+    </ProtectedRoute>
+  )
+}
