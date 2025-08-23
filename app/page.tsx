@@ -3,366 +3,200 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { WebsiteLayout } from "@/components/website-layout"
 import {
+  ShieldCheck,
+  Cloud,
+  Smartphone,
   Leaf,
   Users,
   BarChart3,
-  Shield,
-  Camera,
-  MapPin,
-  Bell,
   CheckCircle,
   ArrowRight,
   Sprout,
   Tractor,
   UserCheck,
+  Camera,
 } from "lucide-react"
 
 export default function LandingPage() {
-  return (
-    <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-2">
-              <div className="bg-primary rounded-full p-2">
-                <Leaf className="h-6 w-6 text-primary-foreground" />
-              </div>
-              <span className="text-xl font-bold text-foreground">AgriManage</span>
-            </div>
-            <div className="flex items-center space-x-4">
-              <Link href="/login">
-                <Button variant="ghost">Sign In</Button>
-              </Link>
-              <Link href="/signup">
-                <Button>Get Started</Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
+  const features = [
+    {
+      icon: <ShieldCheck className="h-6 w-6" />, 
+      title: "GPS Employee Tracking",
+      description: "Monitor field staff locations in real-time to ensure effective on-ground support."
+    },
+    {
+      icon: <Cloud className="h-6 w-6" />, 
+      title: "AI Disease Detection",
+      description: "Identify crop diseases early using AI technology for faster solutions."
+    },
+    {
+      icon: <Smartphone className="h-6 w-6" />, 
+      title: "Farmer Issue Reporting",
+      description: "Farmers can report problems directly through the app for immediate assistance."
+    }
+  ]
 
+  const stats = [
+    { value: "95%", label: "Faster Issue Resolution" },
+    { value: "24/7", label: "Expert Consultations" },
+    { value: "100%", label: "Farmer Satisfaction" }
+  ]
+
+  return (
+    <WebsiteLayout>
       {/* Hero Section */}
-      <section className="relative py-20 lg:py-32 bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-4xl mx-auto">
-            <Badge variant="secondary" className="mb-4">
-              Professional Agricultural Management
-            </Badge>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-              Revolutionize Your <span className="text-primary">Agricultural</span> Operations
-            </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Streamline crop management, enhance field operations, and boost productivity with our comprehensive
-              agricultural management system designed for farmers, field workers, and administrators.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/signup">
-                <Button size="lg" className="w-full sm:w-auto">
-                  Start Free Trial
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto bg-transparent">
-                  Sign In to Dashboard
-                </Button>
-              </Link>
+      <section className="relative min-h-[90vh] flex items-center">
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div>
+              <Badge className="mb-6 bg-gradient-to-r from-[#00b894] to-[#0984e3] text-white shadow-lg">
+                Agro Smart v1.0
+              </Badge>
+              <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
+                <span className="text-[#d1fae5] drop-shadow-md">Smart Agro Monitoring</span>
+                <br />
+                <span className="bg-gradient-to-r from-[#00b894] to-[#0984e3] bg-clip-text text-transparent drop-shadow-sm">
+                  & Assistance System
+                </span>
+              </h1>
+              <p className="text-xl text-[#d1fae5]/90 mb-8 leading-relaxed">
+                The Smart Agro Monitoring & Assistance System bridges the communication gap between pesticide companies and farmers by offering real-time monitoring, AI-powered disease detection, GPS employee tracking, and direct farmer issue reporting to boost agricultural productivity.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Link href="/signup">
+                  <Button 
+                    size="lg" 
+                    className="bg-gradient-to-r from-[#00b894] to-[#0984e3] hover:from-[#00cec9] hover:to-[#74b9ff] shadow-lg hover:shadow-[#00ffcc]/50 transition-all duration-300"
+                  >
+                    Get Started Free
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-8 mt-12">
+                {stats.map((stat, index) => (
+                  <div 
+                    key={index} 
+                    className="text-center p-4 rounded-lg bg-[#041f1e]/50 backdrop-blur-sm border border-[#00b894]/20"
+                  >
+                    <div className="text-2xl text-[#d1fae5] font-bold drop-shadow-md">
+                      {stat.value}
+                    </div>
+                    <div className="text-[#d1fae5]/80 font-medium">
+                      {stat.label}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-card/30">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-20 bg-[#041f1e]/80">
+        <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+            <h2 className="text-3xl font-bold mb-4 text-[#d1fae5]">
               Complete Agricultural Management Solution
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-[#d1fae5]/80 max-w-2xl mx-auto">
               Everything you need to manage your agricultural operations efficiently, from crop monitoring to team
               coordination.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="border-border/50 hover:shadow-lg transition-shadow">
+            {features.map((feature, index) => (
+              <Card key={index} className="border-[#00b894]/20 hover:shadow-lg transition-shadow bg-[#041f1e]/50 backdrop-blur-sm">
+                <CardHeader>
+                  <div className="bg-gradient-to-r from-[#00b894]/20 to-[#0984e3]/20 rounded-full p-3 w-fit">
+                    <div className="text-[#00b894]">
+                      {feature.icon}
+                    </div>
+                  </div>
+                  <CardTitle className="text-[#d1fae5]">{feature.title}</CardTitle>
+                  <CardDescription className="text-[#d1fae5]/80">
+                    {feature.description}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Additional Features */}
+      <section className="py-20 bg-[#041f1e]">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="border-[#00b894]/20 hover:shadow-lg transition-shadow bg-[#041f1e]/50 backdrop-blur-sm">
               <CardHeader>
-                <div className="bg-primary/10 rounded-full p-3 w-fit">
-                  <Camera className="h-6 w-6 text-primary" />
+                <div className="bg-gradient-to-r from-[#00b894]/20 to-[#0984e3]/20 rounded-full p-3 w-fit">
+                  <Camera className="h-6 w-6 text-[#00b894]" />
                 </div>
-                <CardTitle>Crop Issue Reporting</CardTitle>
-                <CardDescription>
+                <CardTitle className="text-[#d1fae5]">Crop Issue Reporting</CardTitle>
+                <CardDescription className="text-[#d1fae5]/80">
                   Capture and report crop problems with photos, location data, and detailed descriptions for quick
                   diagnosis.
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="border-border/50 hover:shadow-lg transition-shadow">
+            <Card className="border-[#00b894]/20 hover:shadow-lg transition-shadow bg-[#041f1e]/50 backdrop-blur-sm">
               <CardHeader>
-                <div className="bg-secondary/10 rounded-full p-3 w-fit">
-                  <MapPin className="h-6 w-6 text-secondary" />
+                <div className="bg-gradient-to-r from-[#00b894]/20 to-[#0984e3]/20 rounded-full p-3 w-fit">
+                  <Users className="h-6 w-6 text-[#00b894]" />
                 </div>
-                <CardTitle>GPS Location Tracking</CardTitle>
-                <CardDescription>
-                  Precise field location mapping and tracking for accurate problem identification and resource
-                  allocation.
+                <CardTitle className="text-[#d1fae5]">Team Management</CardTitle>
+                <CardDescription className="text-[#d1fae5]/80">
+                  Coordinate field workers, assign tasks, and track performance with comprehensive team management tools.
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card className="border-border/50 hover:shadow-lg transition-shadow">
+            <Card className="border-[#00b894]/20 hover:shadow-lg transition-shadow bg-[#041f1e]/50 backdrop-blur-sm">
               <CardHeader>
-                <div className="bg-primary/10 rounded-full p-3 w-fit">
-                  <BarChart3 className="h-6 w-6 text-primary" />
+                <div className="bg-gradient-to-r from-[#00b894]/20 to-[#0984e3]/20 rounded-full p-3 w-fit">
+                  <BarChart3 className="h-6 w-6 text-[#00b894]" />
                 </div>
-                <CardTitle>Analytics & Insights</CardTitle>
-                <CardDescription>
-                  Comprehensive dashboards with crop performance metrics, regional analysis, and productivity insights.
+                <CardTitle className="text-[#d1fae5]">Analytics & Insights</CardTitle>
+                <CardDescription className="text-[#d1fae5]/80">
+                  Get detailed analytics and insights into your agricultural operations, crop health, and team performance.
                 </CardDescription>
               </CardHeader>
-            </Card>
-
-            <Card className="border-border/50 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="bg-secondary/10 rounded-full p-3 w-fit">
-                  <Bell className="h-6 w-6 text-secondary" />
-                </div>
-                <CardTitle>Real-time Notifications</CardTitle>
-                <CardDescription>
-                  Instant alerts for urgent issues, status updates, and important agricultural advisories.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-border/50 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="bg-primary/10 rounded-full p-3 w-fit">
-                  <Users className="h-6 w-6 text-primary" />
-                </div>
-                <CardTitle>Team Collaboration</CardTitle>
-                <CardDescription>
-                  Seamless coordination between farmers, field employees, and administrators with role-based access.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-border/50 hover:shadow-lg transition-shadow">
-              <CardHeader>
-                <div className="bg-secondary/10 rounded-full p-3 w-fit">
-                  <Shield className="h-6 w-6 text-secondary" />
-                </div>
-                <CardTitle>Secure Data Management</CardTitle>
-                <CardDescription>
-                  Enterprise-grade security with encrypted data storage and secure authentication protocols.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Role-based Solutions */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">Tailored for Every Role</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Specialized dashboards and tools designed for farmers, field employees, and administrators.
-            </p>
-          </div>
-
-          <div className="grid lg:grid-cols-3 gap-8">
-            <Card className="border-border/50 hover:shadow-lg transition-shadow">
-              <CardHeader className="text-center">
-                <div className="bg-primary/10 rounded-full p-4 w-fit mx-auto">
-                  <Sprout className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle className="text-2xl">For Farmers</CardTitle>
-                <CardDescription>Direct crop issue reporting and monitoring tools</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-primary mr-3" />
-                    Submit crop problem reports
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-primary mr-3" />
-                    Upload field photos and videos
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-primary mr-3" />
-                    Track issue resolution status
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-primary mr-3" />
-                    Receive expert recommendations
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-primary mr-3" />
-                    Access historical data
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border/50 hover:shadow-lg transition-shadow">
-              <CardHeader className="text-center">
-                <div className="bg-secondary/10 rounded-full p-4 w-fit mx-auto">
-                  <Tractor className="h-8 w-8 text-secondary" />
-                </div>
-                <CardTitle className="text-2xl">For Field Employees</CardTitle>
-                <CardDescription>Field operations and farmer support tools</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-secondary mr-3" />
-                    Assist farmers with reporting
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-secondary mr-3" />
-                    GPS location tagging
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-secondary mr-3" />
-                    Mark urgent issues
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-secondary mr-3" />
-                    Track work history
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-secondary mr-3" />
-                    Mobile-optimized interface
-                  </li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="border-border/50 hover:shadow-lg transition-shadow">
-              <CardHeader className="text-center">
-                <div className="bg-primary/10 rounded-full p-4 w-fit mx-auto">
-                  <UserCheck className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle className="text-2xl">For Administrators</CardTitle>
-                <CardDescription>Complete system oversight and management</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3">
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-primary mr-3" />
-                    Comprehensive analytics dashboard
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-primary mr-3" />
-                    Diagnose and resolve issues
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-primary mr-3" />
-                    Manage product recommendations
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-primary mr-3" />
-                    Monitor team performance
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="h-4 w-4 text-primary mr-3" />
-                    Generate detailed reports
-                  </li>
-                </ul>
-              </CardContent>
             </Card>
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-primary/80">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto">
-            <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-4">
-              Ready to Transform Your Agricultural Operations?
-            </h2>
-            <p className="text-xl text-primary-foreground/90 mb-8">
-              Join thousands of farmers and agricultural professionals who trust AgriManage for their crop management
-              needs.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/signup">
-                <Button size="lg" variant="secondary" className="w-full sm:w-auto">
-                  Start Your Free Trial
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-              <Link href="/login">
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full sm:w-auto border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10 bg-transparent"
-                >
-                  Access Your Dashboard
-                </Button>
-              </Link>
-            </div>
+      <section className="py-20 bg-gradient-to-r from-[#00b894]/10 to-[#0984e3]/10">
+        <div className="container mx-auto px-6 text-center">
+          <h2 className="text-3xl font-bold mb-6 text-[#d1fae5]">
+            Ready to Transform Your Agricultural Operations?
+          </h2>
+          <p className="text-xl text-[#d1fae5]/80 mb-8 max-w-2xl mx-auto">
+            Join thousands of farmers and agricultural professionals who are already using our system to improve productivity and efficiency.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/signup">
+              <Button size="lg" className="bg-gradient-to-r from-[#00b894] to-[#0984e3] hover:from-[#00cec9] hover:to-[#74b9ff] shadow-lg">
+                Start Free Trial
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button size="lg" variant="outline" className="border-[#00b894] text-[#d1fae5] hover:bg-[#00b894]/20">
+                Sign In to Dashboard
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="bg-card border-t border-border/40">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid md:grid-cols-4 gap-8">
-            <div className="md:col-span-2">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="bg-primary rounded-full p-2">
-                  <Leaf className="h-5 w-5 text-primary-foreground" />
-                </div>
-                <span className="text-lg font-bold text-foreground">AgriManage</span>
-              </div>
-              <p className="text-muted-foreground mb-4">
-                Professional agricultural management system designed to streamline crop monitoring, enhance field
-                operations, and boost agricultural productivity.
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Sign In
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/signup" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Get Started
-                  </Link>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-foreground mb-4">Support</h3>
-              <ul className="space-y-2">
-                <li>
-                  <Link
-                    href="/forgot-password"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                  >
-                    Reset Password
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-border/40 mt-8 pt-8 text-center">
-            <p className="text-muted-foreground">© 2024 AgriManage. Professional Agricultural Management System.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+    </WebsiteLayout>
   )
 }

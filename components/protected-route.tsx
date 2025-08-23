@@ -5,9 +5,11 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/contexts/auth-context"
 
+type Role = "farmer" | "employee" | "admin"
+
 interface ProtectedRouteProps {
   children: React.ReactNode
-  allowedRoles?: ("farmer" | "employee" | "admin")[]
+  allowedRoles?: Role[]
 }
 
 export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
@@ -17,11 +19,13 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
   useEffect(() => {
     if (!isLoading) {
       if (!user) {
+        console.log("[v0] No user found, redirecting to login")
         router.push("/login")
         return
       }
 
-      if (allowedRoles && !allowedRoles.includes(user.role)) {
+      if (allowedRoles && !allowedRoles.includes(user.role as Role)) {
+        console.log("[v0] User role not allowed, redirecting to unauthorized")
         router.push("/unauthorized")
         return
       }
@@ -36,7 +40,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
     )
   }
 
-  if (!user || (allowedRoles && !allowedRoles.includes(user.role))) {
+  if (!user || (allowedRoles && !allowedRoles.includes(user.role as Role))) {
     return null
   }
 

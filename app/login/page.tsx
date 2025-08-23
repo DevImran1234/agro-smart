@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -28,7 +27,29 @@ export default function LoginPage() {
 
     try {
       await login(email, password)
-      router.push("/dashboard")
+
+      // get user from localStorage after login
+      const storedUser = localStorage.getItem("user")
+      if (storedUser) {
+        const user = JSON.parse(storedUser)
+        console.log("[v0] Logged in user:", user)
+
+        switch (user.role) {
+          case "admin":
+            router.push("/admin/dashboard")
+            break
+          case "employee":
+            router.push("/employee/dashboard")
+            break
+          case "farmer":
+            router.push("/farmer/dashboard")
+            break
+          default:
+            router.push("/unauthorized")
+        }
+      } else {
+        router.push("/dashboard")
+      }
     } catch (err: any) {
       setError(err.message)
     } finally {

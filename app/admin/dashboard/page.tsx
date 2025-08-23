@@ -28,7 +28,7 @@ import {
   Award,
 } from "lucide-react"
 import Link from "next/link"
-import { ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { BarChart, Bar, XAxis, YAxis, PieChart, Pie, Cell, ResponsiveContainer } from "recharts"
 
 const COLORS = ["#164e63", "#f59e0b", "#dc2626", "#059669", "#7c3aed"]
@@ -204,24 +204,37 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={statusData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={100}
-                          paddingAngle={5}
-                          dataKey="value"
-                        >
-                          {statusData.map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={entry.color} />
-                          ))}
-                        </Pie>
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                      </PieChart>
-                    </ResponsiveContainer>
+                    <ChartContainer
+                      config={{
+                        status: {
+                          label: "Status",
+                          color: "#8884d8"
+                        },
+                        value: {
+                          label: "Count",
+                          color: "#82ca9d"
+                        }
+                      }}
+                    >
+                      <ResponsiveContainer width="100%" height="100%">
+                        <PieChart>
+                          <Pie
+                            data={statusData}
+                            cx="50%"
+                            cy="50%"
+                            innerRadius={60}
+                            outerRadius={100}
+                            paddingAngle={5}
+                            dataKey="value"
+                          >
+                            {statusData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Pie>
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                        </PieChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
                   </div>
                   <div className="flex justify-center space-x-4 mt-4">
                     {statusData.map((entry, index) => (
@@ -244,14 +257,27 @@ export default function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={regionStats.slice(0, 8)}>
-                        <XAxis dataKey="_id" />
-                        <YAxis />
-                        <ChartTooltip content={<ChartTooltipContent />} />
-                        <Bar dataKey="count" fill="#164e63" />
-                      </BarChart>
-                    </ResponsiveContainer>
+                    <ChartContainer
+                      config={{
+                        _id: {
+                          label: "Region",
+                          color: "#164e63"
+                        },
+                        count: {
+                          label: "Report Count",
+                          color: "#164e63"
+                        }
+                      }}
+                    >
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={regionStats.slice(0, 8)}>
+                          <XAxis dataKey="_id" />
+                          <YAxis />
+                          <ChartTooltip content={<ChartTooltipContent />} />
+                          <Bar dataKey="count" fill="#164e63" />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </ChartContainer>
                   </div>
                 </CardContent>
               </Card>

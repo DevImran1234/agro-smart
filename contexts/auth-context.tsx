@@ -23,8 +23,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const token = AuthService.getToken()
     const savedUser = AuthService.getUser()
 
+    console.log("[v0] Auth context initialization:", { token: !!token, savedUser })
+
     if (token && savedUser) {
       setUser(savedUser)
+      console.log("[v0] User loaded from localStorage:", savedUser)
     }
 
     setIsLoading(false)
@@ -33,10 +36,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string) => {
     try {
       const response = await AuthService.login({ email, password })
+      console.log("[v0] Login response:", response)
+
       AuthService.setToken(response.token)
       AuthService.setUser(response.user)
       setUser(response.user)
+
+      console.log("[v0] User set after login:", response.user)
     } catch (error) {
+      console.log("[v0] Login error:", error)
       throw error
     }
   }
@@ -44,6 +52,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     AuthService.logout()
     setUser(null)
+    console.log("[v0] User logged out")
   }
 
   const value = {

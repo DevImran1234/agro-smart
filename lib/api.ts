@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api"
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
 
 export interface Report {
   _id: string
@@ -50,13 +50,13 @@ export class ApiService {
     const token = localStorage.getItem("auth_token")
     return {
       "Content-Type": "application/json",
-      Authorization: token || "",
+      Authorization: token ? `Bearer ${token}` : "",
     }
   }
 
   // Farmer API methods
   static async getFarmerReports(): Promise<Report[]> {
-    const response = await fetch(`${API_BASE_URL}/farmer/reports`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/farmer/reports`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch reports")
@@ -69,7 +69,7 @@ export class ApiService {
     region: string
     voiceNotes?: string
   }): Promise<Report> {
-    const response = await fetch(`${API_BASE_URL}/farmer/reports`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/farmer/reports`, {
       method: "POST",
       headers: this.getAuthHeaders(),
       body: JSON.stringify(reportData),
@@ -83,10 +83,10 @@ export class ApiService {
     formData.append("file", file)
 
     const token = localStorage.getItem("auth_token")
-    const response = await fetch(`${API_BASE_URL}/farmer/reports/${reportId}/upload`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/farmer/reports/${reportId}/upload`, {
       method: "POST",
       headers: {
-        Authorization: token || "",
+        Authorization: token ? `Bearer ${token}` : "",
       },
       body: formData,
     })
@@ -97,7 +97,7 @@ export class ApiService {
   static async getReportStatus(
     reportId: string,
   ): Promise<{ status: string; diagnosis?: string; solution?: string; recommendedProducts?: string[] }> {
-    const response = await fetch(`${API_BASE_URL}/farmer/reports/${reportId}/status`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/farmer/reports/${reportId}/status`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch report status")
@@ -107,7 +107,7 @@ export class ApiService {
   static async getReportDiagnosis(
     reportId: string,
   ): Promise<{ diagnosis?: string; solution?: string; recommendedProducts?: string[] }> {
-    const response = await fetch(`${API_BASE_URL}/farmer/reports/${reportId}/diagnosis`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/farmer/reports/${reportId}/diagnosis`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch diagnosis")
@@ -115,7 +115,7 @@ export class ApiService {
   }
 
   static async getFarmerNotifications(): Promise<Notification[]> {
-    const response = await fetch(`${API_BASE_URL}/farmer/notifications`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/farmer/notifications`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch notifications")
@@ -123,7 +123,7 @@ export class ApiService {
   }
 
   static async getFarmerHistory(farmerId: string): Promise<Report[]> {
-    const response = await fetch(`${API_BASE_URL}/farmer/${farmerId}/history`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/farmer/${farmerId}/history`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch farmer history")
@@ -132,7 +132,7 @@ export class ApiService {
 
   // Employee API methods
   static async getEmployeeReports(): Promise<Report[]> {
-    const response = await fetch(`${API_BASE_URL}/employee/reports`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/employee/reports`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch employee reports")
@@ -145,7 +145,7 @@ export class ApiService {
     description: string
     region: string
   }): Promise<Report> {
-    const response = await fetch(`${API_BASE_URL}/employee/reports`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/employee/reports`, {
       method: "POST",
       headers: this.getAuthHeaders(),
       body: JSON.stringify(reportData),
@@ -159,10 +159,10 @@ export class ApiService {
     formData.append("file", file)
 
     const token = localStorage.getItem("auth_token")
-    const response = await fetch(`${API_BASE_URL}/employee/reports/${reportId}/upload`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/employee/reports/${reportId}/upload`, {
       method: "POST",
       headers: {
-        Authorization: token || "",
+        Authorization: token ? `Bearer ${token}` : "",
       },
       body: formData,
     })
@@ -171,7 +171,7 @@ export class ApiService {
   }
 
   static async updateReportLocation(reportId: string, location: { lat: number; lng: number }): Promise<Report> {
-    const response = await fetch(`${API_BASE_URL}/employee/reports/${reportId}/location`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/employee/reports/${reportId}/location`, {
       method: "PUT",
       headers: this.getAuthHeaders(),
       body: JSON.stringify(location),
@@ -181,7 +181,7 @@ export class ApiService {
   }
 
   static async getEmployeeReportStatus(reportId: string): Promise<{ status: string }> {
-    const response = await fetch(`${API_BASE_URL}/employee/reports/${reportId}/status`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/employee/reports/${reportId}/status`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch report status")
@@ -189,7 +189,7 @@ export class ApiService {
   }
 
   static async getEmployeeHistory(): Promise<Report[]> {
-    const response = await fetch(`${API_BASE_URL}/employee/history`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/employee/history`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch employee history")
@@ -197,7 +197,7 @@ export class ApiService {
   }
 
   static async markReportUrgent(reportId: string): Promise<Report> {
-    const response = await fetch(`${API_BASE_URL}/employee/reports/${reportId}/urgent`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/employee/reports/${reportId}/urgent`, {
       method: "PUT",
       headers: this.getAuthHeaders(),
     })
@@ -206,13 +206,14 @@ export class ApiService {
   }
 
   static async getEmployeeNotifications(): Promise<Notification[]> {
-    const response = await fetch(`${API_BASE_URL}/employee/notifications`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/employee/notifications`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch employee notifications")
     return response.json()
   }
 
+  // General report methods (from /api/farmers/reports)
   static async getAllReports(filters?: {
     status?: string
     region?: string
@@ -223,7 +224,7 @@ export class ApiService {
     if (filters?.region) params.append("region", filters.region)
     if (filters?.crop) params.append("crop", filters.crop)
 
-    const response = await fetch(`${API_BASE_URL}/reports?${params.toString()}`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/reports?${params.toString()}`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch all reports")
@@ -239,7 +240,7 @@ export class ApiService {
       recommendedProducts?: string[]
     },
   ): Promise<Report> {
-    const response = await fetch(`${API_BASE_URL}/reports/${reportId}/status`, {
+    const response = await fetch(`${API_BASE_URL}/api/farmers/reports/${reportId}/status`, {
       method: "PUT",
       headers: this.getAuthHeaders(),
       body: JSON.stringify(updateData),
@@ -248,9 +249,9 @@ export class ApiService {
     return response.json()
   }
 
-  // Admin API methods
+  // Admin API methods (these would be in /api/reports routes)
   static async getAdminNotifications(): Promise<Notification[]> {
-    const response = await fetch(`${API_BASE_URL}/admin/notifications`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports/admin/notifications`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch admin notifications")
@@ -258,7 +259,7 @@ export class ApiService {
   }
 
   static async getAdminReports(): Promise<Report[]> {
-    const response = await fetch(`${API_BASE_URL}/admin/reports`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports/admin/reports`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch admin reports")
@@ -273,7 +274,7 @@ export class ApiService {
       recommendedProducts: string[]
     },
   ): Promise<Report> {
-    const response = await fetch(`${API_BASE_URL}/admin/reports/${reportId}/diagnose`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports/admin/reports/${reportId}/diagnose`, {
       method: "PUT",
       headers: this.getAuthHeaders(),
       body: JSON.stringify(diagnosisData),
@@ -283,7 +284,7 @@ export class ApiService {
   }
 
   static async getRegionStats(): Promise<RegionStats[]> {
-    const response = await fetch(`${API_BASE_URL}/admin/dashboard/regions`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports/admin/dashboard/regions`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch region stats")
@@ -291,7 +292,7 @@ export class ApiService {
   }
 
   static async getEmployeePerformance(): Promise<EmployeePerformance[]> {
-    const response = await fetch(`${API_BASE_URL}/admin/employees/performance`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports/admin/employees/performance`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch employee performance")
@@ -299,7 +300,7 @@ export class ApiService {
   }
 
   static async getProducts(): Promise<Product[]> {
-    const response = await fetch(`${API_BASE_URL}/admin/products`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports/admin/products`, {
       headers: this.getAuthHeaders(),
     })
     if (!response.ok) throw new Error("Failed to fetch products")
@@ -313,7 +314,7 @@ export class ApiService {
     price: number
     manufacturer: string
   }): Promise<Product> {
-    const response = await fetch(`${API_BASE_URL}/admin/products`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports/admin/products`, {
       method: "POST",
       headers: this.getAuthHeaders(),
       body: JSON.stringify(productData),
@@ -323,7 +324,7 @@ export class ApiService {
   }
 
   static async deleteProduct(productId: string): Promise<{ message: string }> {
-    const response = await fetch(`${API_BASE_URL}/admin/products/${productId}`, {
+    const response = await fetch(`${API_BASE_URL}/api/reports/admin/products/${productId}`, {
       method: "DELETE",
       headers: this.getAuthHeaders(),
     })
