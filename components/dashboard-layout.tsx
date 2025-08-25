@@ -7,6 +7,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/auth-context"
 import { Leaf, Home, FileText, Bell, Settings, LogOut, Menu, X, User, History, Users, MapPin, Search, Bot } from "lucide-react"
+import { RoutePreloader, FastLink } from "@/components/route-optimizer"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -68,6 +69,7 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen bg-background">
+      <RoutePreloader />
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? "block" : "hidden"}`}>
         <div className="fixed inset-0 bg-black/20" onClick={() => setSidebarOpen(false)} />

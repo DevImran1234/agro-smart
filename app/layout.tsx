@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Geist, Manrope } from "next/font/google"
 import { AuthWrapper } from "@/components/auth-wrapper"
+import { PerformanceMonitor } from "@/components/performance-monitor"
 import "./globals.css"
 
 const geist = Geist({
@@ -30,6 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${geist.variable} ${manrope.variable} antialiased`}>
       <body>
+        <PerformanceMonitor />
         <AuthWrapper>{children}</AuthWrapper>
       </body>
     </html>
