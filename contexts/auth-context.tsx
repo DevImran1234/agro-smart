@@ -35,16 +35,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = async (email: string, password: string) => {
     try {
+      console.log("[Auth] Attempting login for:", email)
       const response = await AuthService.login({ email, password })
-      console.log("[v0] Login response:", response)
+      console.log("[Auth] Login response:", response)
 
       AuthService.setToken(response.token)
       AuthService.setUser(response.user)
       setUser(response.user)
 
-      console.log("[v0] User set after login:", response.user)
+      console.log("[Auth] User set after login:", response.user)
+      console.log("[Auth] Token stored:", !!response.token)
+      console.log("[Auth] Auth context user state updated:", response.user)
+      
+      // Verify the user was stored correctly
+      const storedUser = AuthService.getUser()
+      const storedToken = AuthService.getToken()
+      console.log("[Auth] Verification - Stored user:", storedUser)
+      console.log("[Auth] Verification - Stored token:", !!storedToken)
     } catch (error) {
-      console.log("[v0] Login error:", error)
+      console.error("[Auth] Login error:", error)
       throw error
     }
   }

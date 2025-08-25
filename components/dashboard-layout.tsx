@@ -6,7 +6,7 @@ import Link from "next/link"
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/contexts/auth-context"
-import { Leaf, Home, FileText, Bell, Settings, LogOut, Menu, X, User, History, Users } from "lucide-react"
+import { Leaf, Home, FileText, Bell, Settings, LogOut, Menu, X, User, History, Users, MapPin, Search, Bot } from "lucide-react"
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -18,6 +18,8 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
   const { user, logout } = useAuth()
   const router = useRouter()
   const pathname = usePathname()
+  
+  console.log("[DashboardLayout] Rendering with user:", user?.role, "title:", title)
 
   const handleLogout = () => {
     logout()
@@ -25,24 +27,40 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
   }
 
   const getNavigation = () => {
-    const baseNav = [
-      { name: "Dashboard", href: `/${user?.role}/dashboard`, icon: Home },
-      { name: "Reports", href: `/${user?.role}/dashboard/reports`, icon: FileText },
-      { name: "Notifications", href: `/${user?.role}/dashboard/notifications`, icon: Bell },
-    ]
+    console.log("[DashboardLayout] Getting navigation for user role:", user?.role)
+    
+    let baseNav = []
 
-    if (user?.role === "employee") {
-      baseNav.splice(2, 0, { name: "History", href: "/employee/dashboard/history", icon: History })
+    if (user?.role === "farmer") {
+      console.log("[DashboardLayout] Setting up farmer navigation")
+      baseNav = [
+        { name: "Dashboard", href: "/dashboard", icon: Home },
+        { name: "Reports", href: "/dashboard/reports", icon: FileText },
+        { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
+      ]
+    } else if (user?.role === "employee") {
+      console.log("[DashboardLayout] Setting up employee navigation")
+      baseNav = [
+        { name: "Dashboard", href: "/employee/dashboard", icon: Home },
+        { name: "Reports", href: "/employee/dashboard/reports", icon: FileText },
+        { name: "History", href: "/employee/dashboard/history", icon: History },
+        { name: "Notifications", href: "/employee/dashboard/notifications", icon: Bell },
+      ]
+    } else if (user?.role === "admin") {
+      console.log("[DashboardLayout] Setting up admin navigation")
+      baseNav = [
+        { name: "Dashboard", href: "/admin/dashboard", icon: Home },
+        { name: "Reports", href: "/admin/dashboard/reports", icon: FileText },
+        { name: "User Analytics", href: "/admin/dashboard/user-analytics", icon: Users },
+        { name: "Employee Locations", href: "/admin/dashboard/employee-locations", icon: MapPin },
+        { name: "Location Search", href: "/admin/dashboard/location-search", icon: Search },
+        { name: "Gemini AI", href: "/admin/dashboard/gemini", icon: Bot },
+        { name: "Notifications", href: "/admin/dashboard/notifications", icon: Bell },
+      ]
     }
 
-    if (user?.role === "admin") {
-      baseNav.push(
-        { name: "Users", href: "/admin/dashboard/users", icon: Users },
-        { name: "Analytics", href: "/admin/dashboard/analytics", icon: FileText },
-      )
-    }
-
-    baseNav.push({ name: "Settings", href: `/${user?.role}/dashboard/settings`, icon: Settings })
+    baseNav.push({ name: "Settings", href: "/dashboard/settings", icon: Settings })
+    console.log("[DashboardLayout] Final navigation:", baseNav)
     return baseNav
   }
 

@@ -47,10 +47,16 @@ export default function NewReportPage() {
       // Create the report first
       const report = await ApiService.createFarmerReport(formData)
 
-      // Upload files if any
+      // Upload files if any (only if files are selected and backend supports it)
       if (files.length > 0) {
-        for (const file of files) {
-          await ApiService.uploadReportFile(report._id, file)
+        try {
+          for (const file of files) {
+            await ApiService.uploadReportFile(report._id, file)
+          }
+        } catch (uploadError: any) {
+          console.warn("File upload failed, but report was created:", uploadError)
+          // Don't fail the entire submission if file upload fails
+          // The report is already created successfully
         }
       }
 
@@ -145,11 +151,12 @@ export default function NewReportPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="files">Upload Photos/Videos</Label>
+                  <Label htmlFor="files">Upload Photos/Videos (Optional)</Label>
                   <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
                     <Upload className="mx-auto h-8 w-8 text-muted-foreground mb-2" />
                     <div className="space-y-2">
                       <p className="text-sm text-muted-foreground">Upload images or videos of the affected crops</p>
+                      <p className="text-xs text-muted-foreground">Note: File uploads may be temporarily unavailable</p>
                       <Input
                         id="files"
                         type="file"

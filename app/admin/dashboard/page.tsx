@@ -138,16 +138,16 @@ export default function AdminDashboard() {
                 Manage Products
               </Button>
             </Link>
-            <Link href="/admin/dashboard/analytics" className="flex-1">
+            <Link href="/admin/dashboard/user-analytics" className="flex-1">
               <Button variant="outline" className="w-full h-12 bg-transparent">
                 <BarChart3 className="mr-2 h-4 w-4" />
-                View Analytics
+                User Analytics
               </Button>
             </Link>
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Reports</CardTitle>
@@ -189,6 +189,17 @@ export default function AdminDashboard() {
               <CardContent>
                 <div className="text-2xl font-bold text-green-600">{stats.avgResolutionRate}</div>
                 <p className="text-xs text-muted-foreground">Avg per employee</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                <Users className="h-4 w-4 text-purple-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-purple-600">1,247</div>
+                <p className="text-xs text-muted-foreground">Registered users</p>
               </CardContent>
             </Card>
           </div>

@@ -218,7 +218,83 @@ export default function FarmerReportsPage() {
                               Urgent
                             </Badge>
                           )}
-                        </div>
+                                                        {report.images && report.images.length > 0 && (
+                                <Badge variant="secondary" className="text-xs">
+                                  <Image className="mr-1 h-3 w-3" />
+                                  {report.images.length}
+                                </Badge>
+                              )}
+                              {report.status === "Solved" && (
+                                <Badge variant="default" className="text-xs bg-green-100 text-green-800 border-green-200">
+                                  <CheckCircle className="mr-1 h-3 w-3" />
+                                  Solved
+                                </Badge>
+                              )}
+                            </div>
+                        
+                        {/* Display solution, diagnosis, and recommended products for solved reports */}
+                        {report.status === "Solved" && (report.diagnosis || report.solution || (report.recommendedProducts && report.recommendedProducts.length > 0)) && (
+                          <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <div className="flex items-center space-x-2 mb-2">
+                              <CheckCircle className="h-4 w-4 text-green-600" />
+                              <span className="text-sm font-medium text-green-800">Expert Solution</span>
+                            </div>
+                            
+                            {report.diagnosis && (
+                              <div className="mb-2">
+                                <p className="text-xs font-medium text-green-700 mb-1">Diagnosis:</p>
+                                <p className="text-xs text-green-700">{report.diagnosis}</p>
+                              </div>
+                            )}
+                            
+                            {report.solution && (
+                              <div className="mb-2">
+                                <p className="text-xs font-medium text-green-700 mb-1">Solution:</p>
+                                <p className="text-xs text-green-700">{report.solution}</p>
+                              </div>
+                            )}
+                            
+                            {report.recommendedProducts && report.recommendedProducts.length > 0 && (
+                              <div>
+                                <p className="text-xs font-medium text-green-700 mb-1">Recommended Products:</p>
+                                <div className="space-y-1">
+                                  {report.recommendedProducts.map((product, index) => (
+                                    <div key={index} className="text-xs text-green-700">
+                                      <span className="font-medium">• {product.name}</span>
+                                      {product.dosage && <span className="ml-2">({product.dosage})</span>}
+                                      {product.applicationGuide && (
+                                        <p className="ml-4 text-xs text-green-600">{product.applicationGuide}</p>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Display images prominently if they exist */}
+                        {report.images && report.images.length > 0 && (
+                          <div className="mb-3">
+                            <div className="flex gap-2 overflow-x-auto pb-2">
+                              {report.images.map((image, index) => (
+                                <div key={index} className="flex-shrink-0">
+                                  <img
+                                    src={image}
+                                    alt={`Crop issue ${index + 1}`}
+                                    className="w-20 h-20 object-cover rounded-md border border-border hover:scale-105 transition-transform cursor-pointer"
+                                    onClick={() => window.open(image, '_blank')}
+                                    title="Click to view full size"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                            <p className="text-xs text-muted-foreground mb-2">
+                              {report.images.length} image{report.images.length !== 1 ? 's' : ''} attached
+                            </p>
+                          </div>
+                        )}
+                        
                         <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                           <div className="flex items-center">
                             <MapPin className="mr-1 h-3 w-3" />
@@ -268,17 +344,28 @@ export default function FarmerReportsPage() {
                               )}
                               {report.images.length > 0 && (
                                 <div>
-                                  <Label>Images</Label>
-                                  <div className="grid grid-cols-2 gap-2 mt-2">
+                                  <Label>Images ({report.images.length})</Label>
+                                  <div className="grid grid-cols-2 gap-3 mt-2">
                                     {report.images.map((image, index) => (
-                                      <img
-                                        key={index}
-                                        src={image || "/placeholder.svg"}
-                                        alt={`Report image ${index + 1}`}
-                                        className="w-full h-32 object-cover rounded-lg border border-border"
-                                      />
+                                      <div key={index} className="relative group">
+                                        <img
+                                          src={image || "/placeholder.svg"}
+                                          alt={`Report image ${index + 1}`}
+                                          className="w-full h-32 object-cover rounded-lg border border-border hover:scale-105 transition-transform cursor-pointer"
+                                          onClick={() => window.open(image, '_blank')}
+                                          title="Click to view full size"
+                                        />
+                                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-200 rounded-lg flex items-center justify-center">
+                                          <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                            <Eye className="h-6 w-6 text-white" />
+                                          </div>
+                                        </div>
+                                      </div>
                                     ))}
                                   </div>
+                                  <p className="text-xs text-muted-foreground mt-2">
+                                    Click on any image to view it in full size
+                                  </p>
                                 </div>
                               )}
                               {report.diagnosis && (
@@ -296,11 +383,17 @@ export default function FarmerReportsPage() {
                               {report.recommendedProducts && report.recommendedProducts.length > 0 && (
                                 <div>
                                   <Label>Recommended Products</Label>
-                                  <div className="flex flex-wrap gap-2 mt-2">
+                                  <div className="space-y-2 mt-2">
                                     {report.recommendedProducts.map((product, index) => (
-                                      <Badge key={index} variant="secondary">
-                                        {product}
-                                      </Badge>
+                                      <div key={index} className="p-2 border border-border rounded-lg bg-muted/50">
+                                        <div className="font-medium text-sm">{product.name}</div>
+                                        {product.dosage && (
+                                          <div className="text-xs text-muted-foreground">Dosage: {product.dosage}</div>
+                                        )}
+                                        {product.applicationGuide && (
+                                          <div className="text-xs text-muted-foreground">Guide: {product.applicationGuide}</div>
+                                        )}
+                                      </div>
                                     ))}
                                   </div>
                                 </div>

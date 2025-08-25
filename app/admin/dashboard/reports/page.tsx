@@ -19,7 +19,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ProtectedRoute } from "@/components/protected-route"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { ApiService, type Report } from "@/lib/api"
-import { FileText, AlertTriangle, MapPin, Calendar, Search, Filter, Eye, Stethoscope } from "lucide-react"
+import Link from "next/link"
+import { FileText, AlertTriangle, MapPin, Calendar, Search, Filter, Eye, Stethoscope, Bot, Brain } from "lucide-react"
 
 export default function AdminReportsPage() {
   const [reports, setReports] = useState<Report[]>([])
@@ -236,6 +237,12 @@ export default function AdminReportsPage() {
                         </div>
                       </div>
                       <div className="ml-4 flex items-center space-x-2">
+                        <Link href={`/admin/dashboard/gemini/analysis/${report._id}`}>
+                          <Button size="sm" variant="outline">
+                            <Brain className="mr-1 h-3 w-3" />
+                            AI Analysis
+                          </Button>
+                        </Link>
                         <Dialog>
                           <DialogTrigger asChild>
                             <Button size="sm" variant="outline" onClick={() => handleDiagnose(report)}>

@@ -7,33 +7,50 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { ProtectedRoute } from "@/components/protected-route"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { ApiService, type Report, type Notification } from "@/lib/api"
-import { FileText, Clock, CheckCircle, AlertTriangle, Plus, TrendingUp, MapPin, Calendar, Bell } from "lucide-react"
+import { FileText, Clock, CheckCircle, AlertTriangle, Plus, TrendingUp, MapPin, Calendar, Bell, Image } from "lucide-react"
 import Link from "next/link"
+import { useAuth } from "@/contexts/auth-context"
 
 export default function FarmerDashboard() {
   const [reports, setReports] = useState<Report[]>([])
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const { user, isAuthenticated } = useAuth()
+  
+  console.log("[FarmerDashboard] Rendering with user:", user?.role, "isAuthenticated:", isAuthenticated)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [reportsData, notificationsData] = await Promise.all([
-          ApiService.getFarmerReports(),
-          ApiService.getFarmerNotifications(),
-        ])
-        setReports(reportsData)
-        setNotifications(notificationsData)
-      } catch (err: any) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
+    useEffect(() => {
+    console.log("[Dashboard] useEffect triggered:", { isAuthenticated, user: user?.role })
+    
+    // Only fetch data when user is authenticated
+    if (isAuthenticated && user) {
+      console.log("[Dashboard] User authenticated, fetching data")
+      const fetchData = async () => {
+        try {
+          console.log("[Dashboard] Fetching data for user:", user)
+          
+          const [reportsData, notificationsData] = await Promise.all([
+            ApiService.getFarmerReports(),
+            ApiService.getFarmerNotifications(),
+          ])
+          
+          console.log("[Dashboard] Data fetched successfully:", { reports: reportsData, notifications: notificationsData })
+          setReports(reportsData)
+          setNotifications(notificationsData)
+        } catch (err: any) {
+          console.error("[Dashboard] Error fetching data:", err)
+          setError(err.message || "Failed to fetch dashboard data")
+        } finally {
+          setLoading(false)
+        }
       }
-    }
 
-    fetchData()
-  }, [])
+      fetchData()
+    } else {
+      console.log("[Dashboard] User not authenticated yet, skipping data fetch")
+    }
+  }, [isAuthenticated, user])
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -54,9 +71,13 @@ export default function FarmerDashboard() {
     inProgress: reports.filter((r) => r.status === "In Progress").length,
     solved: reports.filter((r) => r.status === "Solved").length,
     urgent: reports.filter((r) => r.urgent).length,
+    withImages: reports.filter((r) => r.images && r.images.length > 0).length,
   }
+  
+  console.log("[Dashboard] Stats calculated:", stats)
 
-  if (loading) {
+  if (!isAuthenticated || !user) {
+    console.log("[Dashboard] User not authenticated, showing loading state")
     return (
       <ProtectedRoute allowedRoles={["farmer"]}>
         <DashboardLayout title="Dashboard">
@@ -68,13 +89,32 @@ export default function FarmerDashboard() {
     )
   }
 
+  if (loading) {
+    console.log("[Dashboard] Still loading data, showing loading state")
+    return (
+      <ProtectedRoute allowedRoles={["farmer"]}>
+        <DashboardLayout title="Dashboard">
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        </DashboardLayout>
+      </ProtectedRoute>
+    )
+  }
+  
+  console.log("[Dashboard] Rendering main dashboard content")
+
   return (
     <ProtectedRoute allowedRoles={["farmer"]}>
       <DashboardLayout title="Farmer Dashboard">
         <div className="space-y-6">
           {error && (
             <Alert variant="destructive">
-              <AlertDescription>{error}</AlertDescription>
+              <AlertDescription>
+                {error}
+                <br />
+                <small className="text-xs">Check the browser console for more details</small>
+              </AlertDescription>
             </Alert>
           )}
 
@@ -95,7 +135,7 @@ export default function FarmerDashboard() {
           </div>
 
           {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Reports</CardTitle>
@@ -139,6 +179,17 @@ export default function FarmerDashboard() {
                 <p className="text-xs text-muted-foreground">Completed</p>
               </CardContent>
             </Card>
+
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">With Images</CardTitle>
+                <Image className="h-4 w-4 text-purple-600" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold text-purple-600">{stats.withImages}</div>
+                <p className="text-xs text-muted-foreground">Visual evidence</p>
+              </CardContent>
+            </Card>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-6">
@@ -171,7 +222,7 @@ export default function FarmerDashboard() {
                       {reports.slice(0, 5).map((report) => (
                         <div
                           key={report._id}
-                          className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-accent/50 transition-colors"
+                          className="flex items-start justify-between p-4 border border-border rounded-lg hover:bg-accent/50 transition-colors"
                         >
                           <div className="flex-1">
                             <div className="flex items-center space-x-2 mb-1">
@@ -182,8 +233,84 @@ export default function FarmerDashboard() {
                                   Urgent
                                 </Badge>
                               )}
+                              {report.images && report.images.length > 0 && (
+                                <Badge variant="secondary" className="text-xs">
+                                  <Image className="mr-1 h-3 w-3" />
+                                  {report.images.length}
+                                </Badge>
+                              )}
+                              {report.status === "Solved" && (
+                                <Badge variant="default" className="text-xs bg-green-100 text-green-800 border-green-200">
+                                  <CheckCircle className="mr-1 h-3 w-3" />
+                                  Solved
+                                </Badge>
+                              )}
                             </div>
                             <p className="text-sm text-muted-foreground mb-2 line-clamp-2">{report.description}</p>
+                            
+                            {/* Display solution, diagnosis, and recommended products for solved reports */}
+                            {report.status === "Solved" && (report.diagnosis || report.solution || (report.recommendedProducts && report.recommendedProducts.length > 0)) && (
+                              <div className="mb-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                                <div className="flex items-center space-x-2 mb-2">
+                                  <CheckCircle className="h-4 w-4 text-green-600" />
+                                  <span className="text-sm font-medium text-green-800">Expert Solution</span>
+                                </div>
+                                
+                                {report.diagnosis && (
+                                  <div className="mb-2">
+                                    <p className="text-xs font-medium text-green-700 mb-1">Diagnosis:</p>
+                                    <p className="text-xs text-green-700">{report.diagnosis}</p>
+                                  </div>
+                                )}
+                                
+                                {report.solution && (
+                                  <div className="mb-2">
+                                    <p className="text-xs font-medium text-green-700 mb-1">Solution:</p>
+                                    <p className="text-xs text-green-700">{report.solution}</p>
+                                  </div>
+                                )}
+                                
+                                {report.recommendedProducts && report.recommendedProducts.length > 0 && (
+                                  <div>
+                                    <p className="text-xs font-medium text-green-700 mb-1">Recommended Products:</p>
+                                    <div className="space-y-1">
+                                      {report.recommendedProducts.map((product, index) => (
+                                        <div key={index} className="text-xs text-green-700">
+                                          <span className="font-medium">• {product.name}</span>
+                                          {product.dosage && <span className="ml-2">({product.dosage})</span>}
+                                          {product.applicationGuide && (
+                                            <p className="ml-4 text-xs text-green-600">{product.applicationGuide}</p>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                            
+                            {/* Display images if they exist */}
+                            {report.images && report.images.length > 0 && (
+                              <div className="mb-3">
+                                <div className="flex gap-2 overflow-x-auto pb-2">
+                                  {report.images.map((image, index) => (
+                                    <div key={index} className="flex-shrink-0">
+                                      <img
+                                        src={image}
+                                        alt={`Crop issue ${index + 1}`}
+                                        className="w-16 h-16 object-cover rounded-md border border-border hover:scale-105 transition-transform cursor-pointer"
+                                        onClick={() => window.open(image, '_blank')}
+                                        title="Click to view full size"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                  {report.images.length} image{report.images.length !== 1 ? 's' : ''} attached
+                                </p>
+                              </div>
+                            )}
+                            
                             <div className="flex items-center space-x-4 text-xs text-muted-foreground">
                               <div className="flex items-center">
                                 <MapPin className="mr-1 h-3 w-3" />

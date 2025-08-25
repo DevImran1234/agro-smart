@@ -26,28 +26,70 @@ export default function LoginPage() {
     setIsLoading(true)
 
     try {
+      console.log("[Login] Form submitted, attempting login...")
+      console.log("[Login] Email:", email, "Password length:", password.length)
       await login(email, password)
+      console.log("[Login] Login successful, processing redirect...")
 
       // get user from localStorage after login
       const storedUser = localStorage.getItem("user")
+      console.log("[Login] Stored user from localStorage:", storedUser)
+      
       if (storedUser) {
         const user = JSON.parse(storedUser)
-        console.log("[v0] Logged in user:", user)
+        console.log("[Login] Parsed user object:", user)
+        console.log("[Login] User role:", user.role)
 
         switch (user.role) {
           case "admin":
-            router.push("/admin/dashboard")
+            console.log("[Login] Redirecting admin to /admin/dashboard")
+            // Add a small delay to ensure user data is properly stored
+            setTimeout(() => {
+              console.log("[Login] Executing admin redirect...")
+              try {
+                router.push("/admin/dashboard")
+                console.log("[Login] Router.push called for admin")
+              } catch (error) {
+                console.error("[Login] Router error, using window.location:", error)
+                window.location.href = "/admin/dashboard"
+              }
+            }, 100)
             break
           case "employee":
-            router.push("/employee/dashboard")
+            console.log("[Login] Redirecting employee to /employee/dashboard")
+            setTimeout(() => {
+              try {
+                router.push("/employee/dashboard")
+              } catch (error) {
+                console.error("[Login] Router error, using window.location:", error)
+                window.location.href = "/employee/dashboard"
+              }
+            }, 100)
             break
           case "farmer":
-            router.push("/farmer/dashboard")
+            console.log("[Login] Redirecting farmer to /dashboard")
+            setTimeout(() => {
+              try {
+                router.push("/dashboard")
+              } catch (error) {
+                console.error("[Login] Router error, using window.location:", error)
+                window.location.href = "/dashboard"
+              }
+            }, 100)
             break
           default:
-            router.push("/unauthorized")
+            console.log("[Login] Unknown role, redirecting to /unauthorized")
+            setTimeout(() => {
+              try {
+                router.push("/unauthorized")
+              } catch (error) {
+                console.error("[Login] Router error, using window.location:", error)
+                window.location.href = "/unauthorized"
+              }
+            }, 100)
         }
       } else {
+        console.log("[Login] No stored user found, redirecting to /dashboard")
         router.push("/dashboard")
       }
     } catch (err: any) {
