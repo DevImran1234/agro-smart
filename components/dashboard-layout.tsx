@@ -27,43 +27,42 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
     router.push("/")
   }
 
-  const getNavigation = () => {
-    console.log("[DashboardLayout] Getting navigation for user role:", user?.role)
-    
-    let baseNav = []
+ const getNavigation = () => {
+  console.log("[DashboardLayout] Getting navigation for user role:", user?.role)
 
-    if (user?.role === "farmer") {
-      console.log("[DashboardLayout] Setting up farmer navigation")
-      baseNav = [
-        { name: "Dashboard", href: "/dashboard", icon: Home },
-        { name: "Reports", href: "/dashboard/reports", icon: FileText },
-        { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
-      ]
-    } else if (user?.role === "employee") {
-      console.log("[DashboardLayout] Setting up employee navigation")
-      baseNav = [
-        { name: "Dashboard", href: "/employee/dashboard", icon: Home },
-        { name: "Reports", href: "/employee/dashboard/reports", icon: FileText },
-        { name: "History", href: "/employee/dashboard/history", icon: History },
-        { name: "Notifications", href: "/employee/dashboard/notifications", icon: Bell },
-      ]
-    } else if (user?.role === "admin") {
-      console.log("[DashboardLayout] Setting up admin navigation")
-      baseNav = [
-        { name: "Dashboard", href: "/admin/dashboard", icon: Home },
-        { name: "Reports", href: "/admin/dashboard/reports", icon: FileText },
-        { name: "User Analytics", href: "/admin/dashboard/user-analytics", icon: Users },
-        { name: "Employee Locations", href: "/admin/dashboard/employee-locations", icon: MapPin },
-        { name: "Location Search", href: "/admin/dashboard/location-search", icon: Search },
-        { name: "Gemini AI", href: "/admin/dashboard/gemini", icon: Bot },
-        { name: "Notifications", href: "/admin/dashboard/notifications", icon: Bell },
-      ]
-    }
+  let baseNav = []
 
-    baseNav.push({ name: "Settings", href: "/dashboard/settings", icon: Settings })
-    console.log("[DashboardLayout] Final navigation:", baseNav)
-    return baseNav
+  if (user?.role === "farmer") {
+    baseNav = [
+      { name: "Dashboard", href: "/dashboard", icon: Home },
+      { name: "Reports", href: "/dashboard/reports", icon: FileText },
+      { name: "Notifications", href: "/dashboard/notifications", icon: Bell },
+      { name: "Settings", href: "/dashboard/settings", icon: Settings },
+    ]
+  } else if (user?.role === "employee") {
+    baseNav = [
+      { name: "Dashboard", href: "/employee/dashboard", icon: Home },
+      { name: "Reports", href: "/employee/dashboard/reports", icon: FileText },
+      { name: "History", href: "/employee/dashboard/history", icon: History },
+      { name: "Notifications", href: "/employee/dashboard/notifications", icon: Bell },
+      { name: "Settings", href: "/employee/dashboard/settings", icon: Settings },
+    ]
+  } else if (user?.role === "admin") {
+    baseNav = [
+      { name: "Dashboard", href: "/admin/dashboard", icon: Home },
+      { name: "Reports", href: "/admin/dashboard/reports", icon: FileText },
+      { name: "User Analytics", href: "/admin/dashboard/user-analytics", icon: Users },
+      { name: "Employee Locations", href: "/admin/dashboard/employee-locations", icon: MapPin },
+      { name: "Location Search", href: "/admin/dashboard/location-search", icon: Search },
+      { name: "Gemini AI", href: "/admin/dashboard/gemini", icon: Bot },
+      { name: "Notifications", href: "/admin/dashboard/notifications", icon: Bell },
+      { name: "Settings", href: "/admin/dashboard/settings", icon: Settings },
+    ]
   }
+
+  console.log("[DashboardLayout] Final navigation:", baseNav)
+  return baseNav
+}
 
   const navigation = getNavigation()
 
@@ -79,7 +78,7 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
               <div className="bg-primary rounded-full p-2">
                 <Leaf className="h-5 w-5 text-primary-foreground" />
               </div>
-              <span className="font-bold text-foreground">AgriManage</span>
+              <span className="font-bold text-foreground">Smart Agro</span>
             </div>
             <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(false)}>
               <X className="h-4 w-4" />
@@ -111,7 +110,7 @@ export function DashboardLayout({ children, title }: DashboardLayoutProps) {
           <div className="bg-primary rounded-full p-2">
             <Leaf className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="font-bold text-foreground">AgriManage</span>
+          <span className="font-bold text-foreground">Smart Agro</span>
         </div>
         <nav className="p-4 space-y-2">
           {navigation.map((item) => (

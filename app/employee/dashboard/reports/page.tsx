@@ -244,7 +244,7 @@ export default function EmployeeReportsPage() {
                           {report.farmer && (
                             <div className="flex items-center">
                               <Users className="mr-1 h-3 w-3" />
-                              Farmer: {report.farmer}
+                              Farmer: {typeof report.farmer === 'string' ? report.farmer : report.farmer.username}
                             </div>
                           )}
                           {report.images.length > 0 && (

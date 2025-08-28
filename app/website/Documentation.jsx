@@ -38,7 +38,7 @@ const docSections = [
   {
     id: "getting-started",
     title: "Getting Started",
-    content: "Learn how to set up and start using AgriMed Hub for your agricultural needs."
+    content: "Learn how to set up and start using SmartAgro Hub for your agricultural needs."
   },
   {
     id: "data-management",

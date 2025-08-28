@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -21,6 +21,7 @@ export default function NewEmployeeReportPage() {
     description: "",
     region: "",
   })
+  const [farmers, setFarmers] = useState<{ _id: string; username: string; email: string }[]>([])
   const [files, setFiles] = useState<File[]>([])
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null)
   const [loading, setLoading] = useState(false)
@@ -28,6 +29,19 @@ export default function NewEmployeeReportPage() {
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
   const router = useRouter()
+
+  useEffect(() => {
+    const fetchFarmers = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/farmers/farmers")
+        const data = await res.json()
+        setFarmers(data)
+      } catch (err) {
+        console.error("Error fetching farmers:", err)
+      }
+    }
+    fetchFarmers()
+  }, [])
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -68,17 +82,14 @@ export default function NewEmployeeReportPage() {
     setLoading(true)
 
     try {
-      // Create the report first
       const report = await ApiService.createEmployeeReport(formData)
 
-      // Upload files if any
       if (files.length > 0) {
         for (const file of files) {
           await ApiService.uploadEmployeeReportFile(report._id, file)
         }
       }
 
-      // Add location if available
       if (location) {
         await ApiService.updateReportLocation(report._id, location)
       }
@@ -120,18 +131,25 @@ export default function NewEmployeeReportPage() {
                   </Alert>
                 )}
 
+                {/* Farmer Dropdown */}
                 <div className="space-y-2">
-                  <Label htmlFor="farmerId">Farmer ID *</Label>
+                  <Label htmlFor="farmerId">Select Farmer *</Label>
                   <div className="relative">
                     <Users className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                    <Input
+                    <select
                       id="farmerId"
-                      placeholder="Enter farmer's ID or identifier"
                       value={formData.farmerId}
                       onChange={(e) => handleInputChange("farmerId", e.target.value)}
-                      className="pl-10"
+                      className="pl-10 w-full border rounded-md h-10"
                       required
-                    />
+                    >
+                      <option value="">-- Choose a Farmer --</option>
+                      {farmers.map((farmer) => (
+                        <option key={farmer._id} value={farmer._id}>
+                          {farmer.username} ({farmer.email})
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 </div>
 

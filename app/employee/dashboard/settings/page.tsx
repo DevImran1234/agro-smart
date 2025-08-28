@@ -8,15 +8,16 @@ import { Label } from "@/components/ui/label"
 import { ProtectedRoute } from "@/components/protected-route"
 import { DashboardLayout } from "@/components/dashboard-layout"
 import { useAuth } from "@/contexts/auth-context"
-import { ArrowLeft, User, Bell, Shield, Save } from "lucide-react"
+import { ArrowLeft, User, Bell, Shield, Save, MapPin, Clock, Target } from "lucide-react"
 import Link from "next/link"
 
-export default function SettingsPage() {
+export default function EmployeeSettingsPage() {
   const { user } = useAuth()
   const [loading, setLoading] = useState(false)
   const [notifications, setNotifications] = useState(true)
   const [emailUpdates, setEmailUpdates] = useState(true)
   const [smsAlerts, setSmsAlerts] = useState(false)
+  const [locationSharing, setLocationSharing] = useState(true)
 
   const handleSave = async () => {
     setLoading(true)
@@ -25,16 +26,16 @@ export default function SettingsPage() {
   }
 
   return (
-    <ProtectedRoute >
-      <DashboardLayout title="Settings">
+    <ProtectedRoute allowedRoles={["employee"]}>
+      <DashboardLayout title="Employee Settings">
         <div className="space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">Settings</h1>
-              <p className="text-muted-foreground">Manage your account preferences and notifications</p>
+              <h1 className="text-3xl font-bold">Employee Settings</h1>
+              <p className="text-muted-foreground">Manage your employee account and work preferences</p>
             </div>
-            <Link href="/dashboard">
+            <Link href="/employee/dashboard">
               <Button variant="outline">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Dashboard
@@ -47,9 +48,9 @@ export default function SettingsPage() {
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <User className="h-5 w-5" />
-                <span>Profile Information</span>
+                <span>Employee Profile</span>
               </CardTitle>
-              <CardDescription>Update your personal information</CardDescription>
+              <CardDescription>Your employee account information</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {user ? (
@@ -76,11 +77,15 @@ export default function SettingsPage() {
                   </div>
                   <div>
                     <Label htmlFor="role">Role</Label>
-                    <Input id="role" value={user.role} disabled />
+                    <Input id="role" value={user.role || "employee"} disabled />
                   </div>
                   <div>
-                    <Label htmlFor="region">Region</Label>
-                      <Input id="region" value={user.region || ""} disabled />
+                    <Label htmlFor="region">Assigned Region</Label>
+                    <Input id="region" value={user.region || ""} disabled />
+                  </div>
+                  <div>
+                    <Label htmlFor="employeeId">Employee ID</Label>
+                    <Input id="employeeId" value={user._id || ""} disabled />
                   </div>
                 </>
               ) : (
@@ -89,8 +94,60 @@ export default function SettingsPage() {
             </CardContent>
           </Card>
 
+          {/* Work Preferences */}
+          {/* <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Target className="h-5 w-5" />
+                <span>Work Preferences</span>
+              </CardTitle>
+              <CardDescription>Manage your work-related settings</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="locationSharing">Location Sharing</Label>
+                  <p className="text-sm text-muted-foreground">Share your location for field assignments</p>
+                </div>
+                <input
+                  type="checkbox"
+                  id="locationSharing"
+                  checked={locationSharing}
+                  onChange={(e) => setLocationSharing(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="emailUpdates">Email Updates</Label>
+                  <p className="text-sm text-muted-foreground">Get work assignments and updates via email</p>
+                </div>
+                <input
+                  type="checkbox"
+                  id="emailUpdates"
+                  checked={emailUpdates}
+                  onChange={(e) => setEmailUpdates(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Label htmlFor="smsAlerts">SMS Alerts</Label>
+                  <p className="text-sm text-muted-foreground">Receive urgent work alerts via SMS</p>
+                </div>
+                <input
+                  type="checkbox"
+                  id="smsAlerts"
+                  checked={smsAlerts}
+                  onChange={(e) => setSmsAlerts(e.target.checked)}
+                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                />
+              </div>
+            </CardContent>
+          </Card> */}
+
           {/* Notification Settings */}
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Bell className="h-5 w-5" />
@@ -112,37 +169,11 @@ export default function SettingsPage() {
                   className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
                 />
               </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="emailUpdates">Email Updates</Label>
-                  <p className="text-sm text-muted-foreground">Get important updates via email</p>
-                </div>
-                <input
-                  type="checkbox"
-                  id="emailUpdates"
-                  checked={emailUpdates}
-                  onChange={(e) => setEmailUpdates(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                />
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <Label htmlFor="smsAlerts">SMS Alerts</Label>
-                  <p className="text-sm text-muted-foreground">Receive urgent alerts via SMS</p>
-                </div>
-                <input
-                  type="checkbox"
-                  id="smsAlerts"
-                  checked={smsAlerts}
-                  onChange={(e) => setSmsAlerts(e.target.checked)}
-                  className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                />
-              </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Security Settings */}
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle className="flex items-center space-x-2">
                 <Shield className="h-5 w-5" />
@@ -160,8 +191,11 @@ export default function SettingsPage() {
               <Button variant="outline" className="w-full justify-start">
                 Login History
               </Button>
+              <Button variant="outline" className="w-full justify-start">
+                Device Management
+              </Button>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Save Button */}
           <div className="flex justify-end">

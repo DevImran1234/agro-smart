@@ -176,7 +176,7 @@ export function WebsiteLayout({ children }: { children: React.ReactNode }) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <h6 className="text-lg font-semibold mb-4">
-                AgriMed Hub
+                SmartAgro Hub
               </h6>
               <p className="text-sm text-gray-300">
                 Revolutionizing agricultural education and smart farming
@@ -218,7 +218,7 @@ export function WebsiteLayout({ children }: { children: React.ReactNode }) {
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center">
             <p className="text-sm text-gray-300">
-              © {new Date().getFullYear()} AgriMed Hub. All rights reserved.
+              © {new Date().getFullYear()} SmartAgro . All rights reserved.
             </p>
           </div>
         </div>

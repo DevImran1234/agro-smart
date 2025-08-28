@@ -52,7 +52,7 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             <div>
               <Badge className="mb-6 bg-gradient-to-r from-[#00b894] to-[#0984e3] text-white shadow-lg">
-                Agro Smart v1.0
+               Smart  Agro  v1.0
               </Badge>
               <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
                 <span className="text-[#d1fae5] drop-shadow-md">Smart Agro Monitoring</span>

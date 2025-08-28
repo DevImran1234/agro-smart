@@ -6,7 +6,7 @@ export function Logo() {
       <div className="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-full p-2">
         <Leaf className="h-6 w-6 text-white" />
       </div>
-      <span className="text-xl font-bold text-white">AgriMed Hub</span>
+      <span className="text-xl font-bold text-white">Smart Agro</span>
     </div>
   )
 }

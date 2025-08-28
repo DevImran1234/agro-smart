@@ -66,7 +66,7 @@ export default function SignupPage() {
               <Leaf className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-foreground">Join AgriManage</h1>
+          <h1 className="text-3xl font-bold text-foreground">Join SmartAgro</h1>
           <p className="text-muted-foreground">Create your agricultural management account</p>
         </div>
 

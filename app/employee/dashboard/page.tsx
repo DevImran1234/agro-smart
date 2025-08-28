@@ -233,7 +233,7 @@ export default function EmployeeDashboard() {
                               {report.farmer && (
                                 <div className="flex items-center">
                                   <Users className="mr-1 h-3 w-3" />
-                                  Farmer ID: {report.farmer}
+                                  Farmer ID: {typeof report.farmer === 'string' ? report.farmer : report.farmer._id}
                                 </div>
                               )}
                             </div>

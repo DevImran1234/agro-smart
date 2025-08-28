@@ -109,7 +109,7 @@ export default function LoginPage() {
               <Leaf className="h-8 w-8 text-primary-foreground" />
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-foreground">AgriManage</h1>
+          <h1 className="text-3xl font-bold text-foreground">Smart Agro</h1>
           <p className="text-muted-foreground">Sign in to your agricultural management account</p>
         </div>
 

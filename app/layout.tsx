@@ -18,7 +18,7 @@ const manrope = Manrope({
 })
 
 export const metadata: Metadata = {
-  title: "AgriManage - Agricultural Management System",
+  title: "SmartAgro - Agricultural Management System",
   description: "Professional agricultural management system for farmers, employees, and administrators",
     generator: 'v0.app'
 }

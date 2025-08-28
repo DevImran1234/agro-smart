@@ -58,7 +58,7 @@ export default function AboutPage() {
             Revolutionizing <span className="text-emerald-400">Agricultural</span> Technology
           </h1>
           <p className="text-xl text-emerald-100 max-w-3xl mx-auto leading-relaxed">
-            AgriMed Hub is at the forefront of agricultural innovation, combining cutting-edge technology 
+            Smart  Agro is at the forefront of agricultural innovation, combining cutting-edge technology 
             with deep agricultural expertise to create solutions that empower farmers and transform the industry.
           </p>
         </div>
