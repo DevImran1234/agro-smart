@@ -242,7 +242,7 @@ export default function EmployeeLocationsPage() {
                   </div>
                 </CardContent>
               </Card>
-              <Card>
+              {/* <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center space-x-2">
                     <Wifi className="h-5 w-5 text-green-600" />
@@ -252,8 +252,8 @@ export default function EmployeeLocationsPage() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-              <Card>
+              </Card> */}
+              {/* <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center space-x-2">
                     <WifiOff className="h-5 w-5 text-red-600" />
@@ -263,7 +263,7 @@ export default function EmployeeLocationsPage() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
               <Card>
                 <CardContent className="pt-6">
                   <div className="flex items-center space-x-2">
